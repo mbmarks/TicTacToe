@@ -1,13 +1,17 @@
 import os, time
 from random import randint
 
+# Represents the empty spaces on the board
 spaces = [' ',' ',' ',' ',' ',' ',' ',' ',' ']
+#The win condition of the game, 'nwin' is no win, 'xwin' x wins, 'owin' o wins
 win = 'nwin'
 
 def clearscreen():
+    '''Clears the screen.'''
     os.system('cls')
 
 def printboard(spaces):
+    '''Prints the current board state to the console.'''
     print()
     print("      |     |     ")
     print(f'   {spaces[6]}  |  {spaces[7]}  |  {spaces[8]}  ')
@@ -20,24 +24,45 @@ def printboard(spaces):
     print("      |     |     ")
 
 def yorn(answer):
+    '''Returns true if yes, false if no.
+    
+    Parameters:
+        answer(string): options are 'y', 'yes', 'n', or 'no'
+    '''
     if ((answer.lower() == 'y') or (answer.lower() == 'yes')):
         return True
     elif ((answer.lower() == 'n') or (answer.lower() == 'no')):
         return False
 
 def teamSelect(character):
+    '''Returns the team selection, True for 'X' and False for 'O'.
+
+    Parameters:
+        character (char): team selection
+    '''
     if (character.lower() == 'x'):
         return True
     else:
         return False
 
 def pieceOutput(x):
+    '''Returns the string value of the team given boolean.
+
+    Parameters:
+    x (boolean): True for 'X', False for 'O'
+    '''
     if(x):
         return 'X'
     else:
         return 'O'
 
 def move(space, team):
+    '''Moves a team to a space on the board. Returns true if successful.
+
+    Parameters:
+        space (int): The position selection on the board
+        team (boolean): Team 'X' if true, 'O' if false
+    '''
     if(spaces[space] == ' '):
         spaces[space] = pieceOutput(team)
         return True
@@ -48,77 +73,50 @@ def move(space, team):
         return False
 
 def winningCondition():
-    if(spaces[0] == 'X'):
-        if(spaces[1] == 'X'):
-            if(spaces[2] == 'X'):
-                return 'xwin'
-        if(spaces[4] == 'X'):
-            if(spaces[8] == 'X'):
-                return 'xwin'
-        if(spaces[3] == 'X'):
-            if(spaces[6] == 'X'):
-                return 'xwin'
-        
-    if(spaces[4] == 'X'):
-        if(spaces[3] == 'X'):
-            if(spaces[5] == 'X'):
-                return 'xwin'
-        if(spaces[1] == 'X'):
-            if(spaces[7] == 'X'):
-                return 'xwin'
-        if(spaces[6] == 'X'):
-            if(spaces[2] == 'X'):
-                return 'xwin'
+    '''Return the victory condition given the current board state.'''
+    for i in ['X','O']:
+        if(spaces[0] == i):
+            if(spaces[1] == i):
+                if(spaces[2] == i):
+                    return i.lower() + 'win'
+            if(spaces[4] == i):
+                if(spaces[8] == i):
+                    return i.lower() + 'win'
+            if(spaces[3] == i):
+                if(spaces[6] == i):
+                    return i.lower() + 'win'
+            
+        if(spaces[4] == i):
+            if(spaces[3] == i):
+                if(spaces[5] == i):
+                    return i.lower() + 'win'
+            if(spaces[1] == i):
+                if(spaces[7] == i):
+                    return i.lower() + 'win'
+            if(spaces[6] == i):
+                if(spaces[2] == i):
+                    return i.lower() + 'win'
 
-    if(spaces[8] == 'X'):
-        if(spaces[7] == 'X'):
-            if(spaces[6] == 'X'):
-                return 'xwin'
-        if(spaces[5] == 'X'):
-            if(spaces[2] == 'X'):
-                return 'xwin'
-    
-    if(spaces[0] == 'O'):
-        if(spaces[1] == 'O'):
-            if(spaces[2] == 'O'):
-                return 'owin'
-        if(spaces[4] == 'O'):
-            if(spaces[8] == 'O'):
-                return 'owin'
-        if(spaces[3] == 'O'):
-            if(spaces[6] == 'O'):
-                return 'owin'
-    
-    if(spaces[4] == 'O'):
-        if(spaces[3] == 'O'):
-            if(spaces[5] == 'O'):
-                return 'owin'
-        if(spaces[1] == 'O'):
-            if(spaces[7] == 'O'):
-                return 'owin'
-        if(spaces[6] == 'O'):
-            if(spaces[2] == 'O'):
-                return 'owin'
-    
-    if(spaces[8] == 'O'):
-        if(spaces[7] == 'O'):
-            if(spaces[6] == 'O'):
-                return 'owin'
-        if(spaces[5] == 'O'):
-            if(spaces[2] == 'O'):
-                return 'owin'
-    
+        if(spaces[8] == i):
+            if(spaces[7] == i):
+                if(spaces[6] == i):
+                    return i.lower() + 'win'
+            if(spaces[5] == i):
+                if(spaces[2] == i):
+                    return i.lower() + 'win'
     return 'nwin' 
 
 def endGameCheck():
+    '''Checks and sets the current win condition.'''
     global win
     win = winningCondition()
-    if((win == 'nwin') and (' ' in spaces)):
-        return win
-    else:
-        return win 
 
 def turn(team):
+    '''Prompts the user to make their move and computes the enemy turn.
+
+    Parameters:
+        team (boolean): team of the human player    
+    '''
     printboard(spaces)
     print('Using your NumPad, choose a location to move.\n(Hint: Enable NumLock)')
     while(not(move(int(input())-1,team))):
@@ -126,23 +124,22 @@ def turn(team):
     clearscreen()
     printboard(spaces)
     time.sleep(1)
-    if (endGameCheck() != 'nwin'):
+    endGameCheck()
+    if (win != 'nwin'):
         return
     clearscreen()
     print('Enemy turn', end ="")
-    time.sleep(0.2)
-    print('.', end ="")
-    time.sleep(0.2)
-    print('.', end ="")
-    time.sleep(0.2)
-    print('.', end ="")
+    for _ in range(3):
+        time.sleep(0.2)
+        print('.', end ="", flush=True)
+    print()
     while(not(move(randint(0,8),not(team)))):
         pass
     clearscreen()
-    if(endGameCheck() != 'nwin'):
-        return
+    endGameCheck()
 
 def begingame():
+    '''Begins the game of TicTacToe.'''
     print('Do you want to play a game of tic tac toe?')
     
     while True:
@@ -154,15 +151,12 @@ def begingame():
         elif (answer):
             clearscreen()
             print('Starting the game', end ="")
-            time.sleep(0.2)
-            print('.', end ="")
-            time.sleep(0.2)
-            print('.', end ="")
-            time.sleep(0.2)
-            print('.', end ="")
-            time.sleep(0.2)
+            for _ in range(3):
+                time.sleep(0.2)
+                print('.', end ="",flush=True)
+            print()
             break
-        else :
+        else:
             clearscreen()
             print('Okay, see you next time!')
             print('Goodbye!')
